@@ -67,7 +67,7 @@ select_query = st.selectbox("Queries",["What are the top 10 vehicle_Number invol
  "What is the arrest rate by country and violation",
  "Which country has the most stops with search conducted?",
  "Top 5 Violations with Highest Arrest Rates"
-],placeholder = 'select a query', index = None)
+])
 
 query_map = {"What are the top 10 vehicle_Number involved in drug-related stops?": "select vehicle_number, count(*) as stop_count from log where drugs_related_stop = True group by vehicle_number order by stop_count asc limit 10",
 "Which vehicles were most frequently searched?" : "select vehicle_number, count(*) as most_searched from log where search_conducted = True group by vehicle_number order by most_searched desc limit 10",
@@ -105,7 +105,7 @@ with st.form("new_log_form"):
    driver_age = st.number_input("Driver Age", min_value = 18, max_value = 100, value = 27)
    driver_race = st.text_input("Driver Race")
    search_conducted = st.selectbox("Was a Search Conducted?", ["0","1"])
-   search_type = st.text_input("Search Type")
+   search_type = st.selectbox("Search Type",['Vehicle Search','Frisk','None'])
    violation = st.selectbox("violation",['DUI','Speeding','Seatbelt','Signal','Other'])
    drugs_related_stop = st.selectbox("Was it Drugs Related", ["0","1"])
    stop_outcome = st.selectbox("stop_outcome", ['Ticket','Arrest','Warning'])
@@ -132,8 +132,8 @@ if submitted:
         predicted_outcome = filter_data['stop_outcome'].mode()[0]
         predicted_violation = filter_data['violation'].mode()[0]
     else:
-        predicted_outcome = "Warning" 
-        predicted_violation = "Speeding"
+        predicted_outcome = stop_outcome
+        predicted_violation = violation
 # Natural Language Summary
     Search_text = "A Search was Conducted" if int(search_conducted) else "No search was conducted"
     drug_text = "was drug_related" if int(drugs_related_stop) else "was not 💊 drug_related"
